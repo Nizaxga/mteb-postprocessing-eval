@@ -4,4 +4,9 @@ version = "0.1.0"
 description = "Evaluates embedding post-processing techniques on downstream tasks using MTEB benchmarks."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["mteb>=2.7.2", "numpy>=2.4.1", "torch>=2.9.1"]
+dependencies = [
+    "matplotlib>=3.10.8",
+    "mteb>=2.7.2",
+    "numpy>=2.4.1",
+    "torch>=2.9.1",
+]

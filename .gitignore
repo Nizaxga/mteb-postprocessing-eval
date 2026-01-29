@@ -13,3 +13,4 @@ wheels/
 results
 **/*.bak.*
 **/*.log
+**/*test.py
