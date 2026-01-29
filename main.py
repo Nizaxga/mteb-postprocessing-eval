@@ -34,10 +34,6 @@ TASK_REGISTRY = {
 
 
 def build_postprocessor(task_name):
-    return postprocesser.PCA_ABTT()
-    # return postprocesser.No_Train_Projection()
-    # return postprocesser.AdaptivePostProcessor()
-    # return postprocesser.DisentangledAdaptivePostProcessor()
     ttype = TASK_REGISTRY.get(task_name, TaskType.FALLBACK)
     if ttype == TaskType.FALLBACK:
         return postprocesser.PCA_PP()
@@ -68,7 +64,9 @@ def create_mteb_wrapper(base_model, postprocessor):
 
             if hasattr(self, "mteb_model_meta"):
                 self.mteb_model_meta = copy.deepcopy(original_model.mteb_model_meta)
-                self.mteb_model_meta.name = f"{self.mteb_model_meta.name}-PP"
+                self.mteb_model_meta.name = (
+                    f"{self.mteb_model_meta.name}-{self.pp.__class__.__name__}"
+                )
 
         def fit_from_task(self, task_name):
             task = mteb.get_task(task_name)
@@ -295,21 +293,10 @@ def run_mteb_comparison_bench(task_name, base_model):
     os.makedirs(DIR, exist_ok=True)
     cache = mteb.ResultCache(cache_path=DIR)
 
-    # print("--- Running Evaluation for Base Model ---")
-    # mteb.evaluate(
-    #     model=base_model, tasks=tasks, cache=cache, overwrite_strategy="always"
-    # )
-
     print("--- Running Evaluation for Wrapped Model ---")
     mteb.evaluate(
         model=wrapped_model, tasks=tasks, cache=cache, overwrite_strategy="always"
     )
-    # res_wrapped = mteb.evaluate(model=wrapped_model, tasks=tasks, cache=cache)
-    # print(json.dumps(res_wrapped.task_results[0].scores, indent=4))
-
-    # res_base = mteb.evaluate(model=base_model, tasks=tasks, cache=cache)
-    # print(json.dumps(res_base.task_results[0].scores, indent=4))
-    # return res_wrapped, res_base
 
 
 if __name__ == "__main__":
